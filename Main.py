@@ -30,6 +30,8 @@ mass_selection = 3
 
 camera = np.array([0, 0])
 
+to_delete = []
+
 while(True):
     timer.tick(60)        #Sets the framerate to 60
     pygame.event.pump()   #keeps key inputs working
@@ -38,6 +40,22 @@ while(True):
     event = pygame.event.poll()
 
     screen.fill([0, 0, 5])
+
+    for i in planets:
+        i.force(planets, to_delete)
+
+    for i in planets:
+        i.up_and_move()
+
+    if len(to_delete) == 2:
+        new_mass = to_delete[0].mass + to_delete[1].mass
+        new_color = ((to_delete[0].color[0] + to_delete[1].color[0])/2, (to_delete[0].color[1] + to_delete[1].color[1])/2, (to_delete[0].color[2] + to_delete[1].color[2])/2)
+        new_coords = np.array([(to_delete[0].coords[0] * to_delete[0].mass + to_delete[1].mass * to_delete[1].coords[0])/new_mass, (to_delete[0].coords[1] * to_delete[0].mass + to_delete[1].mass * to_delete[1].coords[1])/new_mass])
+        new_vel = np.array([(to_delete[0].vel[0] * to_delete[0].mass + to_delete[1].mass * to_delete[1].vel[0])/new_mass, (to_delete[0].vel[1] * to_delete[0].mass + to_delete[1].mass * to_delete[1].vel[1])/new_mass])
+        planets.append(planet(new_mass, new_coords, new_vel, new_color))
+        planets.remove(to_delete[0])
+        planets.remove(to_delete[1])
+        to_delete = []
 
     for i in planets:
         i.draw(screen, camera)
@@ -54,7 +72,7 @@ while(True):
 
     if event.type == pygame.MOUSEBUTTONUP and dragging == True:
         dragging = False
-        planets.append(planet(mass_options[mass_selection], pre_drag_pos + camera, pre_drag_pos - np.array(pygame.mouse.get_pos())))
+        planets.append(planet(mass_options[mass_selection], pre_drag_pos + camera, pre_drag_pos - np.array(pygame.mouse.get_pos()), (rand.random()*200 + 25, rand.random()*200 + 25, rand.random()*200 + 25)))
 
     if dragging:
         draw_arrow(screen, pygame.math.Vector2(pygame.mouse.get_pos()), pygame.math.Vector2(pre_drag_pos[0], pre_drag_pos[1]), pygame.Color(100, 100, 100), 5, 15, 15)
