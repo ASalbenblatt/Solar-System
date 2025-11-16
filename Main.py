@@ -69,6 +69,10 @@ while(True):
         planets.remove(to_delete[1])
         to_delete = []
 
+    if show_trails:
+        for i in planets:
+            i.draw_trails(screen, camera)
+
     for i in planets:
         i.draw(screen, camera)
 
@@ -109,6 +113,9 @@ while(True):
 
         if event.type == pygame.KEYDOWN and event.key == pygame.K_v:
             toggle_vel()
+
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_t:
+            toggle_trails(planets)
 
         if event.type == pygame.KEYDOWN and event.key == pygame.K_c:
             camera_on_COM = not camera_on_COM

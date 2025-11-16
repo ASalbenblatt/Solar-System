@@ -14,6 +14,16 @@ acc_vec_scale = 25
 show_vel = False
 vel_vec_scale = 0.3
 
+show_trails = True
+trail_length = 300
+trail_width = 2
+
+def toggle_trails (planets):
+    global show_trails
+    show_trails = not show_trails
+    for i in planets:
+        i.trail = []
+
 def toggle_acc ():
     global show_acc
     show_acc = not show_acc
@@ -30,9 +40,19 @@ class planet:
         self.vel = vel
         self.acc = np.array([0, 0])
         self.color = color
+        self.trail = []
+
+    def draw_trails(self, surface, camera_pos):
+        self.trail.append(self.coords)
+        if len(self.trail) > trail_length:
+            self.trail.pop(0)
+        for i in range(0, len(self.trail)-2):
+            color_ratio = i/(len(self.trail)-2)
+            pygame.draw.line(surface, (self.color[0] * color_ratio, self.color[1] * color_ratio, self.color[2] * color_ratio), self.trail[i] - camera_pos, self.trail[i+1] - camera_pos, trail_width)
 
     def draw(self, surface, camera_pos):
         pygame.draw.ellipse(surface, self.color, pygame.Rect(self.coords[0] - camera_pos[0] - (self.diam/2), self.coords[1] - camera_pos[1] - (self.diam/2), self.diam, self.diam))
+        
         if show_acc and show_vel:
             draw_arrow(surface, pygame.math.Vector2(self.coords[0] - camera_pos[0], self.coords[1] - camera_pos[1]), pygame.math.Vector2(np.add(self.vel * vel_vec_scale, self.coords)[0] - camera_pos[0], np.add(self.vel * vel_vec_scale, self.coords)[1] - camera_pos[1]), (0, 200, 0))
             draw_arrow(surface, pygame.math.Vector2(self.coords[0] - camera_pos[0] + (self.vel * vel_vec_scale)[0], self.coords[1] - camera_pos[1] + (self.vel * vel_vec_scale)[1]), pygame.math.Vector2(np.add(self.acc * acc_vec_scale, self.coords)[0] - camera_pos[0] + (self.vel * vel_vec_scale)[0], np.add(self.acc * acc_vec_scale, self.coords)[1] - camera_pos[1] + (self.vel * vel_vec_scale)[1]), (200, 0, 0))
