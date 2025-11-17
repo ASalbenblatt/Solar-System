@@ -14,15 +14,9 @@ acc_vec_scale = 25
 show_vel = False
 vel_vec_scale = 0.3
 
-show_trails = True
 trail_length = 300
 trail_width = 2
 
-def toggle_trails (planets):
-    global show_trails
-    show_trails = not show_trails
-    for i in planets:
-        i.trail = []
 
 def toggle_acc ():
     global show_acc
