@@ -148,10 +148,10 @@ while(True):
             pre_pan_diff = camera + np.array(pygame.mouse.get_pos())
     
         if event.type == pygame.KEYDOWN and event.key == pygame.K_PERIOD:
-            mass_selection = (mass_selection + 1) % 7
+            mass_selection = (mass_selection + 1) % len(mass_options)
         
         if event.type == pygame.KEYDOWN and event.key == pygame.K_COMMA:
-            mass_selection = (mass_selection - 1) % 7
+            mass_selection = (mass_selection - 1) % len(mass_options)
 
         if event.type == pygame.KEYDOWN and event.key == pygame.K_a:
             toggle_acc()
@@ -172,7 +172,7 @@ while(True):
 
         if event.type == pygame.MOUSEBUTTONDOWN:
             dragging = True
-            pre_drag_pos = np.array(pygame.mouse.get_pos())
+            pre_drag_pos = np.array([pygame.mouse.get_pos()[0] + rand.random() * 0.001, pygame.mouse.get_pos()[1]])
 
         if event.type == pygame.MOUSEBUTTONUP and dragging == True:
             dragging = False
